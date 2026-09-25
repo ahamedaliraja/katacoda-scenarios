@@ -1,15 +1,17 @@
 #!/bin/bash -ex
 
-ANSIBLE_CORE=2.13.9
-MOLECULE=3.5.2
+ANSIBLE_CORE=2.21.4
+MOLECULE=26.9.0
 MOLECULE_DOCKER=1.0.2
-ANSIBLE_LINT=5.3.2
-YAML_LINT=1.26.3
+ANSIBLE_LINT=26.9.0
+YAML_LINT=1.38.0
 DOCKER_PY=6.1.1
 
 DOCKER_COLLECTION=3.10.4
 CRYPT_COLLECTION=1.7.1
 GENERAL_COLLECTION=3.8.0
+
+apt install -y python3-pip tree
 
 pip install -U pip setuptools
 pip install \
@@ -19,6 +21,7 @@ pip install \
     ansible-lint==${ANSIBLE_LINT} \
     yamllint==${YAML_LINT} \
     docker==${DOCKER_PY}
+apt install -y docker.io
 hash -r
 ansible-galaxy collection install community.docker:${DOCKER_COLLECTION}
 ansible-galaxy collection install community.crypto:${CRYPT_COLLECTION}
