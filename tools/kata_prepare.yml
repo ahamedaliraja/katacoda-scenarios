@@ -30,6 +30,25 @@
       loop: "{{ target_containers }}"
       register: containers
 
+    - name: Configure CentOS repositories and install Python 3.9
+      community.docker.docker_container_exec:
+        container: "{{ item.name }}"
+        command: >
+          /bin/bash -c
+          "sed -i 's/^mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-*.repo &&
+          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*.repo &&
+          dnf clean all &&
+          dnf makecache &&
+          dnf install -y python39 &&
+          python3.9 --version"
+      loop: "{{ target_containers }}"
+      register: python_install
+
+    - name: Display Python installation result
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ python_install.results }}"
+
     - name: Create a in-memory inventory
       add_host:
         host: "{{ item.container.Config.Hostname }}"
