@@ -32,7 +32,7 @@
 
     - name: Create a in-memory inventory
       add_host:
-        host: "{{ item.invocation.module_args.name }}"
+        host: "{{ item.container.Config.Hostname }}"
         group: dockers
         ansible_user: root
         ansible_connection: docker
@@ -43,7 +43,7 @@
         content: |
           [web]
           {% for i in containers.results %}
-          {{ i.invocation.module_args.name }} ansible_host={{ i.container.NetworkSettings.IPAddress }}
+          {{ i.container.Config.Hostname }} ansible_host={{ i.container.NetworkSettings.Networks.bridge.IPAddress }}
           {% endfor %}
           [all:vars]
           ansible_user=centos
